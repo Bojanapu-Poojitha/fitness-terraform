@@ -35,4 +35,11 @@ resource "aws_subnet" "private_subnet_2" {
      Name = "fitness-private-subnet-2"
       }
 }
+
+resource "aws_internet_gateway" "fitness_igw"{
+    vpc_id = aws_vpc.fitness_vpc.id
+    tags ={
+        Name = "fitness-igw"
+    }
+}
 }
