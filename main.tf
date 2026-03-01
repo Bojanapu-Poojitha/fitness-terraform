@@ -129,3 +129,22 @@ resource "aws_security_group" "rds_sg" {
 
   tags = { Name = "fitness-rds-sg" }
 }
+resource "aws_db_subnet_group" "fitness_db_subnet" {
+  name       = "fitness-db-subnet-group"
+  subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
+  tags = { Name = "fitness-db-subnet-group" }
+}
+resource "aws_db_instance" "fitness_rds" {
+  identifier             = "fitness-db"
+  engine                 = "postgres"
+  engine_version         = "15"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 20
+  db_name                = var.db_name
+  username               = var.db_username
+  password               = var.db_password
+  db_subnet_group_name   = aws_db_subnet_group.fitness_db_subnet.name
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  publicly_accessible    = false
+  tags = { Name = "fitness-rds" }
+}
