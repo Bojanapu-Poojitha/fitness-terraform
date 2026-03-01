@@ -98,4 +98,15 @@ resource "aws_s3_bucket_public_access_block" "fitness_images_access" {
   ignore_public_acls      = false
   restrict_public_buckets = false
 }
-
+resource "aws_s3_bucket_policy" "fitness_images_policy" {
+  bucket = aws_s3_bucket.fitness_images_terraform.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = "*"
+      Action    = "s3:GetObject"
+      Resource  = "${aws_s3_bucket.fitness_images_terraform.arn}/*"
+    }]
+  })
+}
