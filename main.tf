@@ -110,3 +110,22 @@ resource "aws_s3_bucket_policy" "fitness_images_policy" {
     }]
   })
 }
+resource "aws_security_group" "rds_sg" {
+  name   = "fitness-rds-sg"
+  vpc_id = aws_vpc.fitness_vpc.id
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ec2_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = { Name = "fitness-rds-sg" }
+}
