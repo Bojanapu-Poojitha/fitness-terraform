@@ -85,10 +85,17 @@ resource "aws_security_group" "ec2_sg" {
   }
     tags = { Name = "fitness-ec2-sg" }
 }
-resource "aws_s3_bucket" "fitness_images-terraform" {
-  bucket        = "fitness-app-images-terraform"
+resource "aws_s3_bucket" "fitness_images_terraform" {
+  bucket        = "fitness-app-images-terraform-2026"
   tags = {
     Name = "fitness-images-terraform"
      }
+}
+resource "aws_s3_bucket_public_access_block" "fitness_images_access" {
+  bucket                  = aws_s3_bucket.fitness_images_terraform.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
