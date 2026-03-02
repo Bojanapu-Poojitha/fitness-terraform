@@ -110,6 +110,33 @@ resource "aws_s3_bucket_policy" "fitness_images_policy" {
     }]
   })
 }
+resource "aws_s3_bucket" "fitness_thumbnails" {
+  bucket        = "fitness-thumbnails-terraform-2026"
+  force_destroy = true
+  tags = { Name = "fitness-thumbnails" }
+}
+
+resource "aws_s3_bucket_public_access_block" "thumbnails_access" {
+  bucket                  = aws_s3_bucket.fitness_thumbnails.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+resource "aws_s3_bucket_policy" "thumbnails_policy" {
+  bucket     = aws_s3_bucket.fitness_thumbnails.id
+  depends_on = [aws_s3_bucket_public_access_block.thumbnails_access]
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = "*"
+      Action    = "s3:GetObject"
+      Resource  = "${aws_s3_bucket.fitness_thumbnails.arn}/*"
+    }]
+  })
+}
+
 resource "aws_security_group" "rds_sg" {
   name   = "fitness-rds-sg"
   vpc_id = aws_vpc.fitness_vpc.id
