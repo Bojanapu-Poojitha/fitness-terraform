@@ -156,7 +156,21 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
+resource "aws_lambda_function" "thumbnail_generator" {
+  function_name = "fitness-thumbnail-generator"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "index.handler"
+  runtime       = "nodejs20.x"
+  filename      = "lambda.zip"
 
+  environment {
+    variables = {
+      DEST_BUCKET = aws_s3_bucket.fitness_thumbnails.bucket
+    }
+  }
+
+  tags = { Name = "fitness-thumbnail-generator" }
+}
 resource "aws_security_group" "rds_sg" {
   name   = "fitness-rds-sg"
   vpc_id = aws_vpc.fitness_vpc.id
