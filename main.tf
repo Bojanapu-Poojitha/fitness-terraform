@@ -171,6 +171,23 @@ resource "aws_lambda_function" "thumbnail_generator" {
 
   tags = { Name = "fitness-thumbnail-generator" }
 }
+resource "aws_lambda_permission" "allow_s3" {
+  statement_id  = "AllowS3Invoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.thumbnail_generator.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.fitness_images_terraform.arn
+}
+resource "aws_s3_bucket_notification" "originals_trigger" {
+  bucket = aws_s3_bucket.fitness_images_terraform.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.thumbnail_generator.arn
+    events              = ["s3:ObjectCreated:*"] 
+  }
+
+  depends_on = [aws_lambda_permission.allow_s3]
+}
 resource "aws_security_group" "rds_sg" {
   name   = "fitness-rds-sg"
   vpc_id = aws_vpc.fitness_vpc.id
