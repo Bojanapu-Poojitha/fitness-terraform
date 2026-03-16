@@ -47,3 +47,11 @@
     terraform destroy
 
 ```
+
+- To check the frontend app in your browser, paste this URL in your browser : 
+
+```bash 
+
+    13.202.208.66 :3000
+
+```
