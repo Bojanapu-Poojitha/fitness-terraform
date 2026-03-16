@@ -21,6 +21,9 @@
 
 - Implement `security groups` for RDS and EC2 instances .
 
+- To communicate with RDS service, use with backend EC2 instance.
+
+- Because RDS is in private subnet, but backend ec2 using public subnet.
 
 ## Installation and Set up : 
 
